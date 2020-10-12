@@ -1,0 +1,22 @@
+{
+  "name": "@tymon/typereader",
+  "version": "0.0.0",
+  "description": "tymon type reader",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roblabat/tymon.git"
+  },
+  "author": "roblabat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roblabat/tymon/issues"
+  },
+  "homepage": "https://github.com/roblabat/tymon#readme",
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  }
+}
