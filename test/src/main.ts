@@ -1,4 +1,4 @@
-import { readType } from '@tymon/typeReader';
+import { generateRtti } from '@tymon/typereader';
 
 interface hello {
   world: string;
@@ -8,5 +8,7 @@ type hey = {
   world: number;
 };
 
-console.log(readType<hello>());
-console.log(readType<hey>());
+console.log(generateRtti<hello>());
+// console.log(generateRtti<hey>());
+
+console.log('babel');

@@ -11,6 +11,7 @@
     "prestart": "npm install",
     "serve": "lerna run --parallel start",
     "start": "npm run serve",
+    "install": "lerna bootstrap",
     "postinstall": "lerna run --parallel build:module",
     "postpostinstall": "lerna bootstrap"
   },
