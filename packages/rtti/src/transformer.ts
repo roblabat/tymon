@@ -1,22 +1,19 @@
 import ts from 'typescript';
 import { getDescriptor } from './descriptor';
-import { createGenerateFunction, nameOfGenerateFunction } from './generate';
+import { createGenerateFunction } from './generate';
 
 export interface TransformerOptions {}
 
 export function transformer(program: ts.Program, opts?: TransformerOptions) {
-  function visitor(ctx: ts.TransformationContext, sf: ts.SourceFile, result: { seen: boolean }) {
+  function visitor(ctx: ts.TransformationContext, sf: ts.SourceFile) {
     const typeChecker = program.getTypeChecker();
 
     const visitor: ts.Visitor = (node: ts.Node) => {
       if (ts.isCallExpression(node) && node.typeArguments && node.expression.getText(sf) == 'generateRtti') {
         const [type] = node.typeArguments;
-        const [argument] = node.arguments;
-        const fn = ts.createIdentifier(nameOfGenerateFunction);
-        const typeName = type.getText();
-        const typeSource = getDescriptor(type, typeChecker);
-        result.seen = true;
-        return ts.createCall(fn, undefined, [argument || ts.createStringLiteral(typeName), typeSource]);
+        const types: ts.Expression[] = [];
+        const typeSource = getDescriptor(type, typeChecker, ctx.factory, types);
+        return ctx.factory.createCallExpression(createGenerateFunction(ctx.factory, typeSource, types), undefined, []);
       }
 
       return ts.visitEachChild(node, visitor, ctx);
@@ -27,25 +24,7 @@ export function transformer(program: ts.Program, opts?: TransformerOptions) {
 
   return (ctx: ts.TransformationContext) => {
     return (sf: ts.SourceFile) => {
-      const result = { seen: false };
-      const newSf = ts.visitNode(sf, visitor(ctx, sf, result));
-
-      if (result.seen) {
-        const fn = createGenerateFunction();
-        const statements: Array<ts.Statement> = [fn];
-
-        for (const statement of newSf.statements) {
-          if (ts.isImportDeclaration(statement)) {
-            statements.splice(statements.length - 1, 0, statement);
-          } else {
-            statements.push(statement);
-          }
-        }
-
-        return ts.updateSourceFileNode(newSf, statements);
-      }
-
-      return newSf;
+      return ts.visitNode(sf, visitor(ctx, sf));
     };
   };
 }

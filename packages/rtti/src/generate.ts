@@ -1,59 +1,33 @@
 import ts from 'typescript';
+import { typeReferencesName } from './names';
 
-const globalVariableName = '__rtti__types';
-
-export const nameOfGenerateFunction = '__rtti__generate';
-
-export function createGenerateFunction() {
-  const contextVariableName = 'ctx';
-  const localVariableName = 'types';
-  const typeNameParameter = 'typeName';
-  const typeDefParameter = 'typeDefinition';
-  return ts.createFunctionDeclaration(
+export function createGenerateFunction(factory: ts.NodeFactory, type: ts.Expression, typeReferences: ts.Expression[]) {
+  return factory.createArrowFunction(
     undefined,
     undefined,
+    [],
     undefined,
-    nameOfGenerateFunction,
     undefined,
-    [
-      ts.createParameter(undefined, undefined, undefined, typeNameParameter),
-      ts.createParameter(undefined, undefined, undefined, typeDefParameter)
-    ],
-    undefined,
-    ts.createBlock([
-      ts.createVariableStatement(undefined, [
-        ts.createVariableDeclaration(
-          contextVariableName,
+    factory.createBlock([
+      factory.createVariableStatement(undefined, [
+        factory.createVariableDeclaration(
+          typeReferencesName,
           undefined,
-          ts.createConditional(
-            ts.createStrictEquality(
-              ts.createTypeOf(ts.createIdentifier('window')),
-              ts.createStringLiteral('undefined')
-            ),
-            ts.createIdentifier('global'),
-            ts.createIdentifier('window')
-          )
+          undefined,
+          convertToLiteralObject(factory, typeReferences)
         )
       ]),
-      ts.createVariableStatement(undefined, [
-        ts.createVariableDeclaration(
-          localVariableName,
-          undefined,
-          ts.createLogicalOr(
-            ts.createPropertyAccess(ts.createIdentifier(contextVariableName), globalVariableName),
-            ts.createAssignment(
-              ts.createPropertyAccess(ts.createIdentifier(contextVariableName), globalVariableName),
-              ts.createObjectLiteral()
-            )
-          )
-        )
-      ]),
-      ts.createExpressionStatement(
-        ts.createAssignment(
-          ts.createElementAccess(ts.createIdentifier(localVariableName), ts.createIdentifier(typeNameParameter)),
-          ts.createIdentifier(typeDefParameter)
-        )
-      )
+      factory.createReturnStatement(type)
     ])
   );
+}
+
+function convertToLiteralObject(factory: ts.NodeFactory, array: ts.Expression[]) {
+  const list: ts.PropertyAssignment[] = [];
+
+  array.forEach((item, index) => {
+    list.push(factory.createPropertyAssignment(index.toString(), item));
+  });
+
+  return factory.createObjectLiteralExpression(list);
 }

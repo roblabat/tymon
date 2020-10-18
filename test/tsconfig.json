@@ -17,7 +17,7 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "plugins": [{ "transform": "@tymon/typereader" }]
+    "plugins": [{ "transform": "@tymon/rtti" }]
   },
   "include": ["src/**/*", "typings/**/*.d.ts"]
 }
