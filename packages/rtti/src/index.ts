@@ -1,4 +1,5 @@
-import { Rtti } from './rtti/rtti';
+export { Rtti } from './rtti';
+import { Rtti } from './rtti';
 import { transformer } from './transformer';
 
 export function generateRtti<T>(): Rtti {

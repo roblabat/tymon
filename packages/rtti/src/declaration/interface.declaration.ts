@@ -1,10 +1,11 @@
 import ts from 'typescript';
 import { getDescriptor } from '../descriptor';
-import { generate as generateAny } from './any.rtti';
-import { Rtti } from './rtti';
+import { Rtti } from '../rtti';
+import { generate as generateAny } from '../rtti/any.rtti';
+import { generateFunctionLocal } from './generateFunctionLocal.util';
 
 export interface rtti {
-  type: 'interface';
+  type: 'interfaceDeclaration';
   properties: {
     key: string;
     isOptional: boolean;
@@ -23,8 +24,8 @@ export function generateFn(
   type: ts.InterfaceDeclaration,
   typeList: ts.Expression[]
 ) {
-  return factory.createObjectLiteralExpression([
-    factory.createPropertyAssignment('type', factory.createStringLiteral('interface')),
+  const expression = factory.createObjectLiteralExpression([
+    factory.createPropertyAssignment('type', factory.createStringLiteral('interfaceDeclaration')),
     factory.createPropertyAssignment(
       'properties',
       factory.createArrayLiteralExpression(
@@ -50,4 +51,6 @@ export function generateFn(
       )
     )
   ]);
+
+  return generateFunctionLocal(factory, typeChecker, expression, type.typeParameters);
 }

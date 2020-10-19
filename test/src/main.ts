@@ -1,12 +1,11 @@
-import { generateRtti } from '@tymon/rtti';
-import { Rtti } from '@tymon/rtti/dist/rtti/rtti';
+import { generateRtti, Rtti } from '@tymon/rtti';
 
 interface a {
   world: string;
 }
 
 type b = {
-  world: number;
+  world?: number;
 };
 
 interface c {
@@ -16,7 +15,6 @@ interface c {
     hey: number[];
     date: Date;
     bool: boolean;
-    array: Array<string>;
   };
 }
 
@@ -50,27 +48,25 @@ interface k {
   ref: j;
 }
 
-console.log(log(generateRtti<a>()));
-// console.log(generateRtti<b>());
-// console.log(generateRtti<c>());
-// console.log(generateRtti<d>());
-// console.log(generateRtti<e>());
-// console.log(generateRtti<f>());
-// console.log(generateRtti<g>());
-// console.log(generateRtti<h<string>>());
-// console.log(generateRtti<i<any>>());
-console.log(log(generateRtti<j>()));
-console.log(log(generateRtti<k>()));
-
-console.log('babel');
+// console.log('a: ', log(generateRtti<a>()));
+// console.log('b: ', log(generateRtti<b>()));
+// console.log('c: ', log(generateRtti<c>()));
+// console.log('d: ', log(generateRtti<d>()));
+// console.log('e: ', log(generateRtti<e>()));
+// console.log('f: ', log(generateRtti<f>()));
+// console.log('g: ', log(generateRtti<g>()));
+console.log('h: ', log(generateRtti<h<h<string>>>()));
+// console.log('i: ', log(generateRtti<i<any>>()));
+// console.log('j: ', log(generateRtti<j>()));
+// console.log('k: ', og(generateRtti<k>()));
 
 function log(rtti: Rtti, dep = 0) {
   if (rtti) {
     let str = "{ type: '" + rtti.type + "'";
 
-    if (rtti.type === 'reference') {
-      str += ', getRtti(): ' + (dep < 3 ? log(rtti.rtti, dep + 1) : '[Function]');
-    } else if (rtti.type === 'interface') {
+    if (rtti.type === 'typeReference' || rtti.type === 'typeDeclaration') {
+      str += ', rtti: ' + (dep < 10 ? log(rtti.rtti, dep + 1) : '[Function]');
+    } else if (rtti.type === 'interfaceDeclaration' || rtti.type === 'type') {
       str +=
         ', properties: [' +
         rtti.properties.map(
@@ -79,6 +75,31 @@ function log(rtti: Rtti, dep = 0) {
         ']';
     }
 
+    str += ' }';
+
     return str;
   }
 }
+
+const test = {
+  type: 'typeReference',
+  rtti: {
+    type: 'interfaceDeclaration',
+    properties: [
+      {
+        key: 'key',
+        isOptional: false,
+        rtti: {
+          type: 'typeReference',
+          rtti: {
+            type: 'typeReference',
+            rtti: {
+              type: 'interfaceDeclaration',
+              properties: [{ key: 'key', isOptional: false, rtti: { type: 'typeReference', rtti: { type: 'string' } } }]
+            }
+          }
+        }
+      }
+    ]
+  }
+};
