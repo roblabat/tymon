@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { typeReferencesName } from './names';
+import { localTypeReferencesName, typeReferencesName } from './names';
 
 export function createGenerateFunction(factory: ts.NodeFactory, type: ts.Expression, typeReferences: ts.Expression[]) {
   return factory.createArrowFunction(
@@ -15,6 +15,12 @@ export function createGenerateFunction(factory: ts.NodeFactory, type: ts.Express
           undefined,
           undefined,
           convertToLiteralObject(factory, typeReferences)
+        ),
+        factory.createVariableDeclaration(
+          localTypeReferencesName,
+          undefined,
+          undefined,
+          factory.createObjectLiteralExpression()
         )
       ]),
       factory.createReturnStatement(type)
