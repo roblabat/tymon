@@ -31,7 +31,7 @@ export function generateFunctionLocal(
     factory.createIdentifier('typeParams'),
     factory.createExpressionStatement(
       factory.createCallExpression(
-        factory.createPropertyAccessExpression(factory.createIdentifier('typeParams'), 'map'),
+        factory.createPropertyAccessExpression(factory.createIdentifier('typeParams'), 'forEach'),
         undefined,
         [
           factory.createArrowFunction(

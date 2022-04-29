@@ -48,8 +48,8 @@ interface k {
   ref: j;
 }
 
-// console.log('a: ', log(generateRtti<a>()));
-// console.log('b: ', log(generateRtti<b>()));
+console.log('a: ', log(generateRtti<a>()));
+console.log('b: ', log(generateRtti<b>()));
 // console.log('c: ', log(generateRtti<c>()));
 // console.log('d: ', log(generateRtti<d>()));
 // console.log('e: ', log(generateRtti<e>()));
@@ -57,8 +57,8 @@ interface k {
 // console.log('g: ', log(generateRtti<g>()));
 console.log('h: ', log(generateRtti<h<h<string>>>()));
 // console.log('i: ', log(generateRtti<i<any>>()));
-// console.log('j: ', log(generateRtti<j>()));
-// console.log('k: ', og(generateRtti<k>()));
+console.log('j: ', log(generateRtti<j>()));
+console.log('k: ', log(generateRtti<k>()));
 
 function log(rtti: Rtti, dep = 0) {
   if (rtti) {
@@ -87,16 +87,118 @@ const test = {
     type: 'interfaceDeclaration',
     properties: [
       {
-        key: 'key',
+        key: 'circular',
         isOptional: false,
         rtti: {
           type: 'typeReference',
           rtti: {
-            type: 'typeReference',
-            rtti: {
-              type: 'interfaceDeclaration',
-              properties: [{ key: 'key', isOptional: false, rtti: { type: 'typeReference', rtti: { type: 'string' } } }]
-            }
+            type: 'interfaceDeclaration',
+            properties: [
+              {
+                key: 'ref',
+                isOptional: false,
+                rtti: {
+                  type: 'typeReference',
+                  rtti: {
+                    type: 'interfaceDeclaration',
+                    properties: [
+                      {
+                        key: 'circular',
+                        isOptional: false,
+                        rtti: {
+                          type: 'typeReference',
+                          rtti: {
+                            type: 'interfaceDeclaration',
+                            properties: [
+                              {
+                                key: 'ref',
+                                isOptional: false,
+                                rtti: {
+                                  type: 'typeReference',
+                                  rtti: {
+                                    type: 'interfaceDeclaration',
+                                    properties: [
+                                      {
+                                        key: 'circular',
+                                        isOptional: false,
+                                        rtti: {
+                                          type: 'typeReference',
+                                          rtti: {
+                                            type: 'interfaceDeclaration',
+                                            properties: [
+                                              {
+                                                key: 'ref',
+                                                isOptional: false,
+                                                rtti: {
+                                                  type: 'typeReference',
+                                                  rtti: {
+                                                    type: 'interfaceDeclaration',
+                                                    properties: [
+                                                      {
+                                                        key: 'circular',
+                                                        isOptional: false,
+                                                        rtti: {
+                                                          type: 'typeReference',
+                                                          rtti: {
+                                                            type: 'interfaceDeclaration',
+                                                            properties: [
+                                                              {
+                                                                key: 'ref',
+                                                                isOptional: false,
+                                                                rtti: {
+                                                                  type: 'typeReference',
+                                                                  rtti: {
+                                                                    type: 'interfaceDeclaration',
+                                                                    properties: [
+                                                                      {
+                                                                        key: 'circular',
+                                                                        isOptional: false,
+                                                                        rtti: {
+                                                                          type: 'typeReference',
+                                                                          rtti: {
+                                                                            type: 'interfaceDeclaration',
+                                                                            properties: [
+                                                                              {
+                                                                                key: 'ref',
+                                                                                isOptional: false,
+                                                                                rtti: {
+                                                                                  type: 'typeReference',
+                                                                                  rtti: [Function]
+                                                                                }
+                                                                              }
+                                                                            ]
+                                                                          }
+                                                                        }
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                }
+                                                              }
+                                                            ]
+                                                          }
+                                                        }
+                                                      }
+                                                    ]
+                                                  }
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       }
